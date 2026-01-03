@@ -33,9 +33,14 @@ def chat(prompt: Prompt):
             {"role": "user", "content": prompt.message}
         ]
     )
-    return {
-        "reply": response.choices[0].message.content
-    }
+    return {"reply": response.choices[0].message.content}
 
-# Serve frontend
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# -----------------------------
+# Serve frontend safely
+# -----------------------------
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+
+if os.path.isdir(STATIC_DIR):
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+else:
+    print(f"Static folder not found: {STATIC_DIR}")
